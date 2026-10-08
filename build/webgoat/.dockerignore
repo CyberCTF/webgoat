@@ -1,0 +1,5 @@
+# Upstream's .dockerignore admits only a prebuilt app/target/ (it builds the jar outside Docker);
+# here the jar is built inside the image, so the whole source goes in, minus build output.
+app/target/
+app/.github/
+Dockerfile

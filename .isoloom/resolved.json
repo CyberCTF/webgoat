@@ -1,0 +1,163 @@
+{
+  "generated_by_isoloom": "from isoloom.yml; don't edit: change the spec and run `isoloom generate` (`isoloom check` fails when this file is out of date)",
+  "resolved_version": 1,
+  "name": "webgoat",
+  "instance": null,
+  "inputs": [],
+  "networks": {
+    "lab": {
+      "cidr": "10.60.3.0/24",
+      "docker_cidr": "10.60.3.0/24",
+      "internet": false,
+      "gateway": null,
+      "gateway_address": "10.60.3.1",
+      "router": null,
+      "controller": "10.60.3.253"
+    }
+  },
+  "reach": [],
+  "machines": {
+    "webgoat": {
+      "access": false,
+      "supplied": false,
+      "shapes": [
+        "docker"
+      ],
+      "arch": "amd64",
+      "os": null,
+      "windows": false,
+      "addresses": {
+        "lab": "10.60.3.10"
+      },
+      "docker_addresses": {
+        "lab": "10.60.3.10"
+      },
+      "services": [
+        {
+          "port": 8080,
+          "name": "webgoat",
+          "http": true,
+          "publish": 8080
+        },
+        {
+          "port": 9090,
+          "name": "webwolf",
+          "http": true,
+          "publish": 9090
+        }
+      ],
+      "depends_on": [],
+      "inputs": [],
+      "volumes": {},
+      "resources": {
+        "cpus": 2,
+        "memory_mb": 2048,
+        "disk_gb": 20
+      },
+      "gateway_of": [],
+      "routes": [],
+      "default_gateway": null,
+      "offline": true
+    }
+  },
+  "start_order": [
+    "webgoat"
+  ],
+  "clones": {},
+  "tools": {},
+  "groups": {},
+  "router": null,
+  "controller": {
+    "addresses": {
+      "lab": "10.60.3.253"
+    }
+  },
+  "published": [
+    {
+      "machine": "webgoat",
+      "port": 8080,
+      "host_port": 8080
+    },
+    {
+      "machine": "webgoat",
+      "port": 9090,
+      "host_port": 9090
+    }
+  ],
+  "targets": {
+    "possible": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "generated": [
+      "docker",
+      "hosted",
+      "docker-vm",
+      "cloud-docker",
+      "kubernetes"
+    ],
+    "refused": {},
+    "not_possible": {
+      "hybrid": "only when some machines are containers and others are VMs",
+      "vagrant": "needs `vm:` on webgoat",
+      "proxmox": "needs `vm:` on webgoat",
+      "cloud-vm": "needs `vm:` on webgoat",
+      "external": "needs `external:` on webgoat"
+    }
+  },
+  "checks": {
+    "default_position": "networks",
+    "positions": [
+      {
+        "position": "networks",
+        "machine": null,
+        "runner": "isoloom-check",
+        "checks": [
+          {
+            "name": "WebGoat answers",
+            "derived": false,
+            "kind": "http",
+            "target": "http://webgoat:8080/WebGoat/login",
+            "expect": "200",
+            "wait": 240
+          },
+          {
+            "name": "WebGoat reports healthy",
+            "derived": false,
+            "kind": "http",
+            "target": "http://webgoat:8080/WebGoat/actuator/health",
+            "expect": "200",
+            "wait": 30
+          },
+          {
+            "name": "WebWolf answers",
+            "derived": false,
+            "kind": "http",
+            "target": "http://webgoat:9090/WebWolf/login",
+            "expect": "200",
+            "wait": 120
+          }
+        ]
+      },
+      {
+        "position": "webgoat",
+        "machine": "webgoat",
+        "runner": "isoloom-check-webgoat",
+        "checks": [
+          {
+            "name": "no internet from webgoat",
+            "derived": true,
+            "kind": "http",
+            "target": "http://1.1.1.1/",
+            "expect": "blocked",
+            "wait": 0
+          }
+        ]
+      }
+    ]
+  },
+  "message": "WebGoat answers at http://localhost:8080/WebGoat and\nWebWolf at http://localhost:9090/WebWolf. Register a user\non the WebGoat login page (the same account logs in to WebWolf), then follow the lessons.\n"
+}

@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://www.isoloom.com/schema/v1.json
+# OWASP WebGoat (by the WebGoat team, OWASP) as an Isoloom spec: the upstream source, vendored
+# unchanged in build/webgoat/app/, built into a jar by Maven and run by upstream's Dockerfile.
+# One container serves WebGoat (8080) and its companion WebWolf (9090).
+# `isoloom generate`, then `isoloom up docker`.
+version: 1
+name: webgoat
+
+networks:
+  lab: { cidr: 10.60.3.0/24, internet: false }
+
+machines:
+  webgoat:
+    networks: { lab: 10 }
+    services:
+      - { port: 8080, name: webgoat, http: true, publish: 8080 }
+      - { port: 9090, name: webwolf, http: true, publish: 9090 }
+    resources: { cpus: 2, memory_mb: 2048 }
+    docker:
+      build: build/webgoat
+
+checks:
+  - name: WebGoat answers
+    http: http://webgoat:8080/WebGoat/login
+    wait: 240
+  - name: WebGoat reports healthy
+    http: http://webgoat:8080/WebGoat/actuator/health
+  - name: WebWolf answers
+    http: http://webgoat:9090/WebWolf/login
+    wait: 120
+
+message: |
+  WebGoat answers at http://localhost:{{ machines.webgoat.services.0.publish }}/WebGoat and
+  WebWolf at http://localhost:{{ machines.webgoat.services.1.publish }}/WebWolf. Register a user
+  on the WebGoat login page (the same account logs in to WebWolf), then follow the lessons.
