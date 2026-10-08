@@ -15,7 +15,7 @@ Dockerfile.
 
 ```bash
 isoloom generate
-isoloom up docker
+isoloom run docker
 ```
 
 Then open http://localhost:8080/WebGoat, register a user, and use the same account on WebWolf at
