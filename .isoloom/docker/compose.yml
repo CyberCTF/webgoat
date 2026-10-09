@@ -9,6 +9,9 @@ services:
   webgoat:
     build:
       context: ../../build/webgoat
+      labels:
+        isoloom.managed: 'true'
+        isoloom.environment: webgoat
     image: isoloom/webgoat-webgoat
     platform: linux/amd64
     hostname: webgoat
@@ -42,6 +45,8 @@ services:
     labels:
       isoloom.service.webgoat: http:8080
       isoloom.service.webwolf: http:9090
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
     restart: unless-stopped
   webgoat-routes:
     image: alpine:3.20
@@ -63,6 +68,9 @@ services:
       webgoat:
         condition: service_started
     restart: unless-stopped
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
   isoloom-check:
     image: curlimages/curl:8.11.1
     profiles:
@@ -83,6 +91,9 @@ services:
         condition: service_healthy
       webgoat-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
   isoloom-check-webgoat:
     image: curlimages/curl:8.11.1
     profiles:
@@ -98,6 +109,9 @@ services:
         condition: service_healthy
       webgoat-routes:
         condition: service_healthy
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
   isoloom-probe-amd64:
     image: busybox:1.37.0-musl
     platform: linux/amd64
@@ -109,11 +123,20 @@ services:
     - isoloom-probe-amd64:/probe
     network_mode: none
     restart: no
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
 networks:
   lab:
     ipam:
       config:
       - subnet: 10.60.3.0/24
         gateway: 10.60.3.1
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat
 volumes:
-  isoloom-probe-amd64: {}
+  isoloom-probe-amd64:
+    labels:
+      isoloom.managed: 'true'
+      isoloom.environment: webgoat

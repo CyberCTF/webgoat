@@ -105,7 +105,8 @@
       "vagrant": "needs `vm:` on webgoat",
       "proxmox": "needs `vm:` on webgoat",
       "cloud-vm": "needs `vm:` on webgoat",
-      "external": "needs `external:` on webgoat"
+      "external": "needs `external:` on webgoat",
+      "cloud-services": "left out by `targets:`"
     }
   },
   "checks": {
