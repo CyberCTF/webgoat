@@ -4,6 +4,5 @@
   "question": "Complete the WebGoat lessons.",
   "category": "WEB",
   "difficulty": 2,
-  "evidence_kind": "SECRET",
-  "capabilities": ["sql-injection", "cross-site-scripting", "xxe", "insecure-deserialization", "jwt", "path-traversal"]
+  "evidence_kind": "SECRET"
 }
