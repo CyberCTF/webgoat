@@ -1,10 +1,14 @@
 # Upstream's Dockerfile (app/Dockerfile) with one change: upstream copies a jar built beforehand
 # on the host (target/webgoat-*.jar); here a first stage builds it from app/ the way upstream's
 # release workflow does (versions:set to the release version, then the build without tests).
-# The runtime stage is upstream's, unchanged.
+# CyberCTF per-player flags: the build stage swaps in ctf/Flags.java (challenge flags read from a
+# file at start instead of drawn at random) and the runtime stage starts through
+# ctf/ctf-entrypoint.sh, which writes that file from the player's inputs. Otherwise the runtime
+# stage is upstream's.
 FROM docker.io/eclipse-temurin:25-jdk-noble AS build
 WORKDIR /src
 COPY app/ /src
+COPY ctf/Flags.java /src/src/main/java/org/owasp/webgoat/lessons/challenges/Flags.java
 RUN ./mvnw --batch-mode --no-transfer-progress versions:set -DnewVersion=2026.4 -DgenerateBackupPoms=false \
  && ./mvnw --batch-mode --no-transfer-progress package -DskipTests
 
@@ -22,6 +26,7 @@ RUN \
 USER webgoat
 
 COPY --from=build --chown=webgoat /src/target/webgoat-*.jar /home/webgoat/webgoat.jar
+COPY --chmod=755 ctf/ctf-entrypoint.sh /usr/local/bin/ctf-entrypoint.sh
 
 EXPOSE 8080
 EXPOSE 9090
@@ -29,7 +34,7 @@ EXPOSE 9090
 ENV TZ=Europe/Amsterdam
 
 WORKDIR /home/webgoat
-ENTRYPOINT [ "java", \
+ENTRYPOINT [ "/usr/local/bin/ctf-entrypoint.sh", "java", \
    "-Duser.home=/home/webgoat", \
    "-Dfile.encoding=UTF-8", \
    "--add-opens", "java.base/java.lang=ALL-UNNAMED", \

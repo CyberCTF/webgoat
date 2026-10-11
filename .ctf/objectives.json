@@ -1,0 +1,82 @@
+{
+  "objectives": [
+    {
+      "key": "admin-lost-password",
+      "title": "Admin lost password",
+      "prompt": "Solve the WebGoat challenge \"Admin lost password\": log in as admin and submit the flag WebGoat shows you.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-webgoat-admin-lost-password}",
+      "hints": [
+        "The admin forgot where the password is stashed: look closely at every resource the challenge page loads, not only the HTML."
+      ]
+    },
+    {
+      "key": "without-password",
+      "title": "Without password",
+      "prompt": "Solve the WebGoat challenge \"Without password\": log in as Larry without knowing his password and submit the flag.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-webgoat-without-password}",
+      "hints": [
+        "The login form checks the password with a database query built from your input: think SQL injection."
+      ]
+    },
+    {
+      "key": "without-account",
+      "title": "Without account",
+      "prompt": "Solve the WebGoat challenge \"Without account\": cast a vote without being logged in and submit the flag.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-webgoat-without-account}",
+      "hints": [
+        "The voting endpoint only enforces the login on some HTTP methods: think HTTP verb tampering.",
+        "The flag comes back in a response header."
+      ]
+    },
+    {
+      "key": "main",
+      "title": "Admin password reset",
+      "prompt": "Solve the WebGoat challenge \"Admin password reset\": reset the admin's password and submit the flag.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-webgoat-admin-password-reset}",
+      "hints": [
+        "Request a reset for your own account first and read the mail in WebWolf: how is the reset link built?",
+        "The application leaks its own source code somewhere under the challenge: look for a version control directory."
+      ],
+      "steps": [
+        {
+          "key": "mailbox",
+          "title": "Find the reset mail",
+          "prompt": "Which companion application receives the password reset mail? (name)",
+          "check": {
+            "answer": [
+              "webwolf",
+              "web wolf"
+            ]
+          }
+        },
+        {
+          "key": "leak",
+          "title": "Find the leaked source",
+          "prompt": "Which version control system's metadata directory exposes the application's source? (name)",
+          "check": {
+            "answer": [
+              "git",
+              ".git"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

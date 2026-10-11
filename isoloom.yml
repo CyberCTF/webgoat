@@ -6,6 +6,10 @@
 version: 1
 name: webgoat
 
+# Given by the CyberCTF launcher: this player's flags for the WebGoat challenges (7 is main).
+# Without them the development flags.
+inputs: [CTF_FLAG_MAIN, CTF_FLAG_ADMIN_LOST_PASSWORD, CTF_FLAG_WITHOUT_PASSWORD, CTF_FLAG_WITHOUT_ACCOUNT]
+
 networks:
   lab: { cidr: 10.60.3.0/24, internet: false }
 
@@ -16,6 +20,8 @@ machines:
       - { port: 8080, name: webgoat, http: true, publish: 8080 }
       - { port: 9090, name: webwolf, http: true, publish: 9090 }
     resources: { cpus: 2, memory_mb: 2048 }
+    # read at start by build/webgoat/ctf/ctf-entrypoint.sh
+    inputs: [CTF_FLAG_MAIN, CTF_FLAG_ADMIN_LOST_PASSWORD, CTF_FLAG_WITHOUT_PASSWORD, CTF_FLAG_WITHOUT_ACCOUNT]
     docker:
       build: build/webgoat
 

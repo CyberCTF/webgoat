@@ -3,7 +3,12 @@
   "resolved_version": 1,
   "name": "webgoat",
   "instance": null,
-  "inputs": [],
+  "inputs": [
+    "CTF_FLAG_MAIN",
+    "CTF_FLAG_ADMIN_LOST_PASSWORD",
+    "CTF_FLAG_WITHOUT_PASSWORD",
+    "CTF_FLAG_WITHOUT_ACCOUNT"
+  ],
   "networks": {
     "lab": {
       "cidr": "10.60.3.0/24",
@@ -47,7 +52,12 @@
         }
       ],
       "depends_on": [],
-      "inputs": [],
+      "inputs": [
+        "CTF_FLAG_MAIN",
+        "CTF_FLAG_ADMIN_LOST_PASSWORD",
+        "CTF_FLAG_WITHOUT_PASSWORD",
+        "CTF_FLAG_WITHOUT_ACCOUNT"
+      ],
       "volumes": {},
       "resources": {
         "cpus": 2,

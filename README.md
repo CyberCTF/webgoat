@@ -24,6 +24,15 @@ published as they are. The same spec runs as Docker on a local VM (`docker-vm`),
 (`cloud-docker`) or on Kubernetes. Lab guide: the lessons themselves and the
 [WebGoat wiki](https://github.com/WebGoat/WebGoat/wiki).
 
+## Flags
+
+The lab's objectives are the four WebGoat challenges that return a flag: Admin lost password,
+Without password, Admin password reset (the main one) and Without account. Upstream draws those
+flags at random at every start; here the overlay ([`build/webgoat/ctf/`](build/webgoat/ctf))
+sets them from the player's inputs (`CTF_FLAG_ADMIN_LOST_PASSWORD`, `CTF_FLAG_WITHOUT_PASSWORD`,
+`CTF_FLAG_MAIN`, `CTF_FLAG_WITHOUT_ACCOUNT`; development values without them). Lesson progress
+stays in WebGoat.
+
 Upstream version and commit: [UPSTREAM.md](UPSTREAM.md).
 
 ## Licence

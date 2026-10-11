@@ -6,6 +6,7 @@
 # Images built from the project, before starting (a local cluster sharing Docker's images:
 # OrbStack, Docker Desktop; elsewhere, push them to a registry the cluster pulls from):
 #   docker build -t isoloom/webgoat-webgoat build/webgoat
+# Inputs (optional, unset ones are empty): kubectl -n isoloom-webgoat create secret generic isoloom-inputs --from-literal=CTF_FLAG_MAIN=… --from-literal=CTF_FLAG_ADMIN_LOST_PASSWORD=… --from-literal=CTF_FLAG_WITHOUT_PASSWORD=… --from-literal=CTF_FLAG_WITHOUT_ACCOUNT=…
 
 apiVersion: v1
 kind: Namespace
@@ -56,6 +57,31 @@ spec:
             - /.isoloom-probe/busybox nc -z -w 2 127.0.0.1 8080 && /.isoloom-probe/busybox nc -z -w 2 127.0.0.1 9090
           periodSeconds: 5
           failureThreshold: 60
+        env:
+        - name: CTF_FLAG_MAIN
+          valueFrom:
+            secretKeyRef:
+              name: isoloom-inputs
+              key: CTF_FLAG_MAIN
+              optional: true
+        - name: CTF_FLAG_ADMIN_LOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: isoloom-inputs
+              key: CTF_FLAG_ADMIN_LOST_PASSWORD
+              optional: true
+        - name: CTF_FLAG_WITHOUT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: isoloom-inputs
+              key: CTF_FLAG_WITHOUT_PASSWORD
+              optional: true
+        - name: CTF_FLAG_WITHOUT_ACCOUNT
+          valueFrom:
+            secretKeyRef:
+              name: isoloom-inputs
+              key: CTF_FLAG_WITHOUT_ACCOUNT
+              optional: true
         resources:
           limits:
             cpu: '2'
