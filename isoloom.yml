@@ -8,23 +8,39 @@ name: webgoat
 
 # Given by the CyberCTF launcher: this player's flags for the WebGoat challenges (7 is main).
 # Without them the development flags.
-inputs: [CTF_FLAG_MAIN, CTF_FLAG_ADMIN_LOST_PASSWORD, CTF_FLAG_WITHOUT_PASSWORD, CTF_FLAG_WITHOUT_ACCOUNT]
+inputs:
+  CTF_FLAG_MAIN: {}
+  CTF_FLAG_ADMIN_LOST_PASSWORD: {}
+  CTF_FLAG_WITHOUT_PASSWORD: {}
+  CTF_FLAG_WITHOUT_ACCOUNT: {}
 
 networks:
-  lab: { cidr: 10.60.3.0/24, internet: false }
+  lab: {cidr: 10.60.3.0/24, internet: false}
 
 machines:
   webgoat:
-    networks: { lab: 10 }
-    services:
-      - { port: 8080, name: webgoat, http: true, publish: 8080 }
-      - { port: 9090, name: webwolf, http: true, publish: 9090 }
-    resources: { cpus: 2, memory_mb: 2048 }
-    # read at start by build/webgoat/ctf/ctf-entrypoint.sh
-    inputs: [CTF_FLAG_MAIN, CTF_FLAG_ADMIN_LOST_PASSWORD, CTF_FLAG_WITHOUT_PASSWORD, CTF_FLAG_WITHOUT_ACCOUNT]
-    docker:
+    networks: {lab: 10}
+    resources: {cpus: 2, memory_mb: 2048}
+    ports:
+      webgoat:
+        port: 8080
+        protocol: http
+        publish: true
+      webwolf:
+        port: 9090
+        protocol: http
+        publish: true
+    files:
+      - path: /run/lab/ctf_flag_main
+        input: CTF_FLAG_MAIN
+      - path: /run/lab/ctf_flag_admin_lost_password
+        input: CTF_FLAG_ADMIN_LOST_PASSWORD
+      - path: /run/lab/ctf_flag_without_password
+        input: CTF_FLAG_WITHOUT_PASSWORD
+      - path: /run/lab/ctf_flag_without_account
+        input: CTF_FLAG_WITHOUT_ACCOUNT
+    app:
       build: build/webgoat
-
 checks:
   - name: WebGoat answers
     http: http://webgoat:8080/WebGoat/login
@@ -36,6 +52,6 @@ checks:
     wait: 120
 
 message: |
-  WebGoat answers at http://localhost:{{ machines.webgoat.services.0.publish }}/WebGoat and
-  WebWolf at http://localhost:{{ machines.webgoat.services.1.publish }}/WebWolf. Register a user
+  WebGoat answers at {{ machines.webgoat.ports.webgoat.url }}WebGoat and
+  WebWolf at {{ machines.webgoat.ports.webwolf.url }}WebWolf. Register a user
   on the WebGoat login page (the same account logs in to WebWolf), then follow the lessons.
